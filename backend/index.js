@@ -118,6 +118,8 @@ async function processImageAsync(imageId, imagePath) {
     try {
         const analysisResult = await analyzeImage(imagePath);
 
+        console.log("analysisResult", analysisResult);
+
         await Image.findByIdAndUpdate(imageId, {
             tags: analysisResult.tags,
             source: analysisResult.source,

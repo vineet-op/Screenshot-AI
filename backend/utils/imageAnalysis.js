@@ -25,7 +25,7 @@ export const analyzeImage = async (imagePath) => {
         'WhatsApp', 'Pinterest', 'Other')
         2. Key tags/categories that describe the content
         3. Extract significant text content
-        4. Give some information about the image
+        4. If the image contains a person, identify if they are a famous person, gamer, or YouTuber. Provide relevant details about their identity, background, or notable achievements
         
         Format your response as JSON with these keys:
         - "source": (only one of: Reddit/Twitter/GitHub/Other)
@@ -56,7 +56,7 @@ export const analyzeImage = async (imagePath) => {
         const jsonString = text.substring(jsonStart, jsonEnd);
 
         const analysis = JSON.parse(jsonString);
-
+        console.log("analysis", analysis)
         // Validate and format response
         return {
             source: ['Reddit', 'Twitter', 'GitHub'].includes(analysis.source)
@@ -66,7 +66,9 @@ export const analyzeImage = async (imagePath) => {
                 ? analysis.tags.slice(0, 5) // Limit to 5 tags
                 : [],
             extractedText: analysis.extractedText || '',
-            imageInfo: analysis.imageInfo || ''
+            imageInfo: typeof analysis.imageInfo === 'string'
+                ? analysis.imageInfo
+                : JSON.stringify(analysis.imageInfo)
         };
 
     } catch (error) {
