@@ -9,14 +9,10 @@ const genAI = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
-export const analyzeImage = async (imagePath) => {
+export const analyzeImage = async (imageBuffer, mimeType) => {
     try {
         // Read image file
-        const imageData = await fs.readFile(imagePath);
-        const base64Data = imageData.toString("base64");
-
-        // Determine MIME type from file extension
-        const mimeType = getMimeType(imagePath);
+        const base64Data = imageBuffer.toString("base64");
 
         // Construct prompt
         const prompt = `Analyze this screenshot and identify:
@@ -76,20 +72,3 @@ export const analyzeImage = async (imagePath) => {
         throw new Error("Image analysis failed");
     }
 };
-
-function getMimeType(filePath) {
-    const ext = path.extname(filePath).toLowerCase();
-    switch (ext) {
-        case '.jpg':
-        case '.jpeg':
-            return 'image/jpeg';
-        case '.png':
-            return 'image/png';
-        case '.gif':
-            return 'image/gif';
-        case '.webp':
-            return 'image/webp';
-        default:
-            return 'image/jpeg'; // Default fallback
-    }
-}

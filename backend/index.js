@@ -7,8 +7,18 @@ import { fileURLToPath } from 'url';
 import mongoose from "mongoose";
 import { Image } from "./Model/imageSchema.js";
 import { analyzeImage } from "./utils/imageAnalysis.js";
+import { v2 as cloudinary } from 'cloudinary'
+import streamifier from 'streamifier';
+import axios from 'axios';
 
 dotenv.config();
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +30,8 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
+
 
 
 //connect to mongodb
@@ -35,14 +47,8 @@ app.get("/", (req, res) => {
     res.json({ status: "Server is running" });
 });
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, './images/'))
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-    }
-});
+
+const storage = multer.memoryStorage()
 
 const upload = multer({
     storage,
@@ -77,6 +83,7 @@ app.post("/upload_images", async (req, res) => {
 
         try {
             const userId = req.body.userId;
+
             if (!userId) {
                 return res.status(400).json({ error: "userId is required" });
             }
@@ -85,27 +92,49 @@ app.post("/upload_images", async (req, res) => {
 
             // Save image metadata to DB and start background processing
             for (const file of req.files) {
-                const newImage = new Image({
-                    userId,
-                    filename: file.filename,
-                    originalName: file.originalname,
-                    path: file.path,
-                    mimetype: file.mimetype,
-                    size: file.size,
-                    status: 'processing'
-                });
+                // Wrap upload_stream in a promise for await/async compatibility
+                const cloudinaryUpload = () =>
+                    new Promise((resolve, reject) => {
+                        const stream = cloudinary.uploader.upload_stream(
+                            { resource_type: "image" },
+                            async (error, result) => {
+                                if (error) {
+                                    console.error("Cloudinary Upload Error:", error);
+                                    return reject(error);
+                                }
 
-                const savedImage = await newImage.save();
-                uploadResults.push(savedImage);
+                                const newImage = new Image({
+                                    userId,
+                                    filename: result.public_id,
+                                    originalName: file.originalname,
+                                    path: result.secure_url, // cloud URL
+                                    mimetype: file.mimetype,
+                                    size: file.size,
+                                    status: 'processing'
+                                });
 
-                // Start background processing
-                processImageAsync(savedImage._id, file.path);
+                                const savedImage = await newImage.save();
+                                uploadResults.push(savedImage);
+
+                                // Start background processing
+                                await processImageAsync(savedImage._id, result.secure_url, file.mimetype);
+
+                                resolve();
+                            }
+                        );
+
+                        streamifier.createReadStream(file.buffer).pipe(stream);
+                    });
+
+                await cloudinaryUpload(); // wait for each upload to finish
             }
 
             return res.status(200).json({
                 message: "Images uploaded successfully. Processing in background.",
                 images: uploadResults
             });
+
+
         } catch (error) {
             console.error('Upload error:', error);
             return res.status(500).json({ error: "Internal server error" });
@@ -113,10 +142,20 @@ app.post("/upload_images", async (req, res) => {
     });
 });
 
+//Download the image from the URL
+async function downloadImageBuffer(url) {
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    return Buffer.from(response.data, 'binary');
+}
+
 // Background image processing
-async function processImageAsync(imageId, imagePath) {
+async function processImageAsync(imageId, imageUrl, mimeType) {
     try {
-        const analysisResult = await analyzeImage(imagePath);
+
+        // Download image buffer from Cloudinary
+        const imageBuffer = await downloadImageBuffer(imageUrl);
+
+        const analysisResult = await analyzeImage(imageBuffer, mimeType);
 
         console.log("analysisResult", analysisResult);
 
@@ -139,45 +178,45 @@ async function processImageAsync(imageId, imagePath) {
     }
 }
 
-// // Search images
-// app.get("/images/search", async (req, res) => {
-//     try {
-//         const userId = req.query.userId;
-//         const query = req.query.q;
+// Search images
+app.get("/images/search", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+        const query = req.query.q;
 
-//         if (!userId || !query) {
-//             return res.status(400).json({ error: "userId and query are required" });
-//         }
+        if (!userId || !query) {
+            return res.status(400).json({ error: "userId and query are required" });
+        }
 
-//         const images = await Image.find({
-//             userId,
-//             $or: [
-//                 { tags: { $regex: query, $options: 'i' } },
-//                 { extractedText: { $regex: query, $options: 'i' } },
-//                 { source: { $regex: query, $options: 'i' } }
-//             ]
-//         });
+        const images = await Image.find({
+            userId,
+            $or: [
+                { tags: { $regex: query, $options: 'i' } },
+                { extractedText: { $regex: query, $options: 'i' } },
+                { source: { $regex: query, $options: 'i' } }
+            ]
+        });
 
-//         res.json(images);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// });
+        res.json(images);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
-// // Get image by ID
-// app.get("/images/:id", async (req, res) => {
-//     try {
-//         const image = await Image.findById(req.params.id);
-//         if (!image) {
-//             return res.status(404).json({ error: "Image not found" });
-//         }
-//         res.json(image);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// });
+// Get image by ID
+app.get("/images/:id", async (req, res) => {
+    try {
+        const image = await Image.findById(req.params.id);
+        if (!image) {
+            return res.status(404).json({ error: "Image not found" });
+        }
+        res.json(image);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
 app.listen(PORT, () => {
