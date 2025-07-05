@@ -10,6 +10,8 @@ import { analyzeImage } from "./utils/imageAnalysis.js";
 import { v2 as cloudinary } from 'cloudinary'
 import streamifier from 'streamifier';
 import axios from 'axios';
+import { authMiddleware } from "./middlewares/authMiddleware.js"
+import authRoutes from "./routes/authRoutes.js"
 
 dotenv.config();
 
@@ -18,7 +20,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,8 +30,6 @@ const PORT = process.env.PORT;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/images', express.static(path.join(__dirname, 'images')));
-
 
 
 
@@ -46,6 +45,8 @@ mongoose.connect(process.env.MONGODB_URI)
 app.get("/", (req, res) => {
     res.json({ status: "Server is running" });
 });
+
+app.use("/api/auth", authRoutes)
 
 
 const storage = multer.memoryStorage()
@@ -69,7 +70,7 @@ const upload = multer({
 
 
 //Post Images
-app.post("/upload_images", async (req, res) => {
+app.post("/upload_images", authMiddleware, async (req, res) => {
 
     upload(req, res, async function (err) {
 
@@ -80,9 +81,12 @@ app.post("/upload_images", async (req, res) => {
             return res.status(413).json({ error: { message: err.message } });
         }
 
-
         try {
-            const userId = req.body.userId;
+            const userId = req.user.userId;
+
+            if (!req.user || !req.user.userId) {
+                return res.status(401).json({ error: "Unauthorized" });
+            }
 
             if (!userId) {
                 return res.status(400).json({ error: "userId is required" });
