@@ -151,7 +151,7 @@ export default function Login() {
                             <div className="py-2">
                                 <Button
                                     type="submit"
-                                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/25 h-12 font-semibold font-inter cursor-pointer"
+                                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/25 h-12 font-medium cursor-pointer font-sans"
                                 >
                                     {isLoading ? (
                                         <>
@@ -164,6 +164,12 @@ export default function Login() {
                                 </Button>
                             </div>
                         </form>
+                        <div className="mt-4 text-center text-sm text-gray-400">
+                            Don't have an account?{" "}
+                            <Link href="/signup" className="text-blue-500 hover:underline">
+                                Sign up
+                            </Link>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
