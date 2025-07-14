@@ -2,19 +2,20 @@
 
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
+import Navbar from "../Navbar/Navbar";
 
 export default function Homepage() {
     return (
-        <section className="w-screen h-screen px-10 py-12 md:py-24 overflow-hidden text-white">
+        <section className="w-screen h-screen px-10 py-12 md:py-10 overflow-hidden text-white">
+            <Navbar />
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20"></div>
                 <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl "></div>
                 <div className="absolute top-1/2 right-0 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl delay-1000"></div>
                 <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl delay-2000"></div>
             </div>
-
-            <div className="flex flex-col h-full mt-30 gap-8 items-center text-center lg:space-y-6 px-4 relative sm:gap-4 lg:gap-4">
-                <Badge className="px-3 py-1 text-xs bg-purple-500/20 relative text-purple-300 border-purple-500/30 rounded-full font-sans">AI-Powered Screenshot Management</Badge>
+            <div className="flex flex-col h-full mt-20 gap-8 items-center text-center lg:space-y-6 px-4 relative sm:gap-4 lg:gap-4">
+                <Badge className="px-2 py-1 text-xs bg-purple-500/20 relative text-white border-purple-500/30 rounded-full font-sans">AI-Powered Screenshot Management</Badge>
                 <motion.div
                     initial={{ opacity: 0, y: -50 }}
                     animate={{ opacity: 1, y: 0 }}
