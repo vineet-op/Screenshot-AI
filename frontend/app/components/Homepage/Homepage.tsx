@@ -13,8 +13,8 @@ export default function Homepage() {
                 <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl delay-2000"></div>
             </div>
 
-            <div className="flex flex-col h-full min-h-screen items-center text-center lg:space-y-6 px-4 relative sm:gap-4 lg:gap-4">
-                <Badge className="px-6 py-1 border-purple-500 rounded-full font-sans">AI-Powered Screenshot Management</Badge>
+            <div className="flex flex-col h-full mt-30 gap-8 items-center text-center lg:space-y-6 px-4 relative sm:gap-4 lg:gap-4">
+                <Badge className="px-3 py-1 text-xs bg-purple-500/20 relative text-purple-300 border-purple-500/30 rounded-full font-sans">AI-Powered Screenshot Management</Badge>
                 <motion.div
                     initial={{ opacity: 0, y: -50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -29,10 +29,11 @@ export default function Homepage() {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3 }}
-                    className="font-sans text-xs md:text-base lg:text-lg font-normal tracking-tighter text-center max-w-4xl pt-5 lg:p-0 text-neutral-100"
+                    className="font-sans text-sm md:text-base lg:text-lg font-normal tracking-tighter text-center max-w-4xl lg:p-0 text-neutral-300"
                 >
                     Say goodbye to messy folders and endless scrolling, a tool automatically organizes, categorizes, and labels your screenshots saving you time and boosting productivity.
                 </motion.div>
+
 
                 <button>
                     <motion.div
