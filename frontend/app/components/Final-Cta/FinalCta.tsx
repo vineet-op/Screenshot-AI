@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Zap, CheckCircle } from "lucide-react";
+import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { motion } from "motion/react";
 
 

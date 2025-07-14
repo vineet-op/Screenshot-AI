@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-
+import Image from "next/image";
 export default function Dashboard() {
 
     const [previews, setPreviews] = useState<string[]>([]);
@@ -110,10 +110,12 @@ export default function Dashboard() {
                 {/* Image Previews */}
                 <div className="mt-10 grid grid-cols-2 gap-4 px-4 max-w-md z-99">
                     {previews.map((src, idx) => (
-                        <img
+                        <Image
                             key={idx}
                             src={src}
                             alt={`preview-${idx}`}
+                            width={200}
+                            height={128}
                             className="w-full h-32 object-cover rounded-md border border-white/20"
                         />
                     ))}

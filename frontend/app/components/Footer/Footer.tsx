@@ -3,6 +3,8 @@
 import { ImageIcon } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+
+
 export default function Footer() {
     return (
         <motion.footer

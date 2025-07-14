@@ -2,7 +2,6 @@ import Features from "./components/Features/Features";
 import FinalCta from "./components/Final-Cta/FinalCta";
 import Footer from "./components/Footer/Footer";
 import Homepage from "./components/Homepage/Homepage";
-import Navbar from "./components/Navbar/Navbar";
 import Works from "./components/Works/Works";
 
 export default function Home() {
