@@ -14,8 +14,18 @@ export default function Homepage() {
                 <div className="absolute top-1/2 right-0 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl delay-1000"></div>
                 <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl delay-2000"></div>
             </div>
-            <div className="flex flex-col h-full mt-20 gap-8 items-center text-center lg:space-y-6 px-4 relative sm:gap-4 lg:gap-4">
-                <Badge className="px-2 py-1 text-xs bg-purple-500/20 relative text-white border-purple-500/30 rounded-full font-sans">AI-Powered Screenshot Management</Badge>
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }} className="flex flex-col h-full mt-20 gap-8 items-center text-center lg:space-y-6 px-4 relative sm:gap-4 lg:gap-4">
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="px-2 py-1 text-xs bg-purple-500/20 relative text-white border-purple-500/30 rounded-full font-sans"
+                >
+                    AI-Powered Screenshot Management
+                </motion.p>
                 <motion.div
                     initial={{ opacity: 0, y: -50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -47,7 +57,7 @@ export default function Homepage() {
                     </motion.div>
                 </button>
 
-            </div>
+            </motion.div>
         </section>
     )
 }
