@@ -1,5 +1,6 @@
-import Homepage from "./components/Homepage";
-import Navbar from "./components/Navbar";
+import Features from "./components/Features/Features";
+import Homepage from "./components/Homepage/Homepage";
+import Navbar from "./components/Navbar/Navbar";
 import Works from "./components/Works/Works";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
       <Navbar />
       <Homepage />
       <Works />
+      <Features />
     </main>
   );
 }

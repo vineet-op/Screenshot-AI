@@ -2,10 +2,15 @@
 
 
 import Link from "next/link"
+import { motion } from "motion/react"
 
 export default function Navbar() {
     return (
-        <nav className="sticky top-0 z-50 backdrop-blur-2xl bg-white/10 shadow-2xl border border-white/20 rounded-3xl px-6 py-5 mx-auto w-[95%] max-w-7xl flex items-center justify-between glassmorphic text-white/80 font-inter">
+        <motion.nav
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="sticky top-0 z-50 backdrop-blur-2xl bg-white/10 shadow-2xl border border-white/20 rounded-3xl px-6 py-5 mx-auto w-[95%] max-w-7xl flex items-center justify-between glassmorphic text-white/80 font-inter">
             {/* Logo */}
             <div className="text-2xl font-extrabold text-white instrument-serif-regular-italic">
                 Screenshot <span className="text-blue-400">AI</span>
@@ -28,6 +33,6 @@ export default function Navbar() {
                     Sign Up
                 </Link>
             </div>
-        </nav>
+        </motion.nav>
     )
 }
