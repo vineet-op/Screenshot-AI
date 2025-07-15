@@ -10,7 +10,7 @@ import { ImageIcon, Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-r
 import Link from "next/link"
 import axios from "axios"
 import { useRouter } from "next/navigation"
-
+import { easeInOut, motion } from "motion/react"
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false)
@@ -78,7 +78,20 @@ export default function Login() {
             </Link>
 
             {/* Main Content */}
-            <div className="w-full max-w-md relative z-10">
+            <motion.div
+                initial={{
+                    opacity: 0,
+                    y: -20
+                }}
+                animate={{
+                    opacity: 1,
+                    y: 0
+                }}
+                transition={{
+                    duration: 0.5,
+                    ease: easeInOut
+                }}
+                className="w-full max-w-md relative z-10">
                 <Card className="bg-gray-900/50 border-gray-800 backdrop-blur-xl shadow-2xl">
                     <CardHeader className="text-center space-y-4 pb-8">
                         {/* Logo */}
@@ -172,7 +185,7 @@ export default function Login() {
                         </div>
                     </CardContent>
                 </Card>
-            </div>
+            </motion.div>
         </div>
     )
 }

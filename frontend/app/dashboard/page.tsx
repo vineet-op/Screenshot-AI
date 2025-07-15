@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Image from "next/image";
+import { toast } from "sonner"
+
 export default function Dashboard() {
 
     const [previews, setPreviews] = useState<string[]>([]);
@@ -34,7 +36,7 @@ export default function Dashboard() {
 
         const formData = new FormData();
         images.forEach((image) => {
-            formData.append("images", image); // adjust key as per your backend
+            formData.append("uploadedImages", image); // adjust key as per your backend
         });
 
         try {
@@ -56,10 +58,10 @@ export default function Dashboard() {
                 console.log(uploaded);
                 setImages(uploaded); // Adjust as needed
             }
-            alert("Upload successful!");
+            toast("Upload successful!")
         } catch (err) {
+            toast("Upload failed!")
             console.error("Upload failed:", err);
-            alert("Upload failed.");
         } finally {
             setLoading(false);
             setPreviews([]);

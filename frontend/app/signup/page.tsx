@@ -10,7 +10,8 @@ import { ImageIcon, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import axios from "axios"
 import { useRouter } from "next/navigation"
-
+import { easeInOut, motion } from "motion/react"
+import { toast } from "sonner"
 
 export default function Signup() {
     const [showPassword, setShowPassword] = useState(false)
@@ -49,10 +50,11 @@ export default function Signup() {
                 const errorMessage = error.response?.data?.error || "Registration failed";
                 console.error("Registration error:", errorMessage);
                 setIsLoading(false);
-                // You could add toast or error state handling here
+                toast("Registration failed");
             } else {
                 console.error("Unexpected error:", error);
                 setIsLoading(false);
+                toast("An unexpected error occurred");
             }
         }
 
@@ -85,7 +87,20 @@ export default function Signup() {
             </Link>
 
             {/* Main Content */}
-            <div className="w-full max-w-md relative z-10">
+            <motion.div
+                initial={{
+                    opacity: 0,
+                    y: -20
+                }}
+                animate={{
+                    opacity: 1,
+                    y: 0
+                }}
+                transition={{
+                    duration: 0.5,
+                    ease: easeInOut
+                }}
+                className="w-full max-w-md relative z-10">
                 <Card className="bg-gray-900/50 border-gray-800 backdrop-blur-xl shadow-2xl">
                     <CardHeader className="text-center space-y-4 pb-8">
                         {/* Logo */}
@@ -131,7 +146,7 @@ export default function Signup() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="email" className="text-sm font-medium text-gray-300">
-                                    name
+                                    Name
                                 </Label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -177,7 +192,7 @@ export default function Signup() {
                             </div>
                             <Button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/25 h-12 font-medium  cursor-pointer
+                                className="w-full mt-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/25 h-12 font-medium  cursor-pointer
                                 font-sans"
                             >
 
@@ -189,7 +204,7 @@ export default function Signup() {
                                         </svg>
                                         Creating account...
                                     </div>
-                                ) : "Create Account"}
+                                ) : "Create account"}
 
                             </Button>
 
@@ -203,7 +218,7 @@ export default function Signup() {
                         </div>
                     </CardContent>
                 </Card>
-            </div>
+            </motion.div>
         </div>
     )
 }
