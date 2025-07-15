@@ -13,10 +13,17 @@ import { useRouter } from "next/navigation"
 import { easeInOut, motion } from "motion/react"
 import { toast } from "sonner"
 
+interface SignupFormData {
+    email: string
+    name: string
+    password: string
+}
+
 export default function Signup() {
-    const [showPassword, setShowPassword] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-    const [formData, setFormData] = useState({
+
+    const [showPassword, setShowPassword] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [formData, setFormData] = useState<SignupFormData>({
         email: "",
         name: "",
         password: "",

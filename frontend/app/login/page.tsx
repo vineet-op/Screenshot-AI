@@ -12,10 +12,15 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import { easeInOut, motion } from "motion/react"
 
+interface LoginFormData {
+    email: string
+    password: string
+}
+
 export default function Login() {
-    const [showPassword, setShowPassword] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-    const [formData, setFormData] = useState({
+    const [showPassword, setShowPassword] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [formData, setFormData] = useState<LoginFormData>({
         email: "",
         password: "",
     })

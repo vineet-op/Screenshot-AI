@@ -81,9 +81,9 @@ export default function Dashboard() {
 
 
             <div className="flex items-center h-full flex-col text-center  space-y-8 mt-24 md:px-0">
-                <h1 className="text-white text-4xl font-sans font-bold">Upload your Screenshots</h1>
+                <h1 className="text-white text-5xl font-inter font-semibold tracking-tight">Upload your Screenshots</h1>
 
-                <div className="mt-8 w-full max-w-md">
+                <div className="mt-10 w-full lg:max-w-lg max-w-md">
                     <input
                         type="file"
                         multiple
@@ -100,9 +100,9 @@ export default function Dashboard() {
                     <button
                         onClick={UploadImages}
                         disabled={loading}
-                        className="mt-14 w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
-                        hover:scale-105 active:scale-95 text-white py-2 rounded-lg transition-all duration-300 ease-in-out font-sans 
-                        cursor-pointer transform focus:outline-none "
+                        className="mt-14 w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 active:scale-95 text-white py-2 rounded-lg 
+                        transition-all duration-300 ease-in-out font-sans 
+                        cursor-pointer transform focus:outline-none text-sm "
                     >
                         {loading ? "Uploading..." : "Upload"}
                     </button>
