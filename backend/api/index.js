@@ -3,8 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
-import authRoutes from "./routes/authRoutes.js";
-import imageRoutes from "./routes/imageRoutes.js";
+import authRoutes from "../routes/authRoutes.js";
+import imageRoutes from "../routes/imageRoutes.js";
 
 
 dotenv.config();
