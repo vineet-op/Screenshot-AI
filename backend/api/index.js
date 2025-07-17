@@ -30,6 +30,11 @@ mongoose
         console.log("❌ Error connecting to MongoDB", err);
     });
 
+// Health check route
+app.get("/", (req, res) => {
+    res.status(200).send("Server is running");
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/user", imageRoutes);
 
