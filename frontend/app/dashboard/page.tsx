@@ -45,8 +45,8 @@ export default function Dashboard() {
                 "http://localhost:8000/api/user/upload_images",
                 formData,
                 {
+                    withCredentials: true,
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
                         "Content-Type": "multipart/form-data",
                     },
                 }
