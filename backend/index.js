@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
-
 import authRoutes from "./routes/authRoutes.js";
 import imageRoutes from "./routes/imageRoutes.js";
+
 
 dotenv.config();
 
@@ -13,7 +13,11 @@ const app = express();
 const PORT = process.env.PORT;
 
 // Middleware
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({
+    origin: ['http://localhost:3000'],
+    credentials: true
+}));
 app.use(express.json());
 
 //connect to mongodb

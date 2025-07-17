@@ -33,16 +33,16 @@ export default function Login() {
         // Authenticate user and get JWT token
         try {
             const response = await axios.post("http://localhost:8000/api/auth/login", formData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-                }
+                withCredentials: true
             })
+
             setFormData({
                 email: "",
                 password: ""
             })
 
             router.push("/dashboard")
+
         } catch (error) {
             if (error instanceof axios.AxiosError) {
                 const errorMessage = error.response?.data?.error || "Login failed";

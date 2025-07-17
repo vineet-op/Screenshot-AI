@@ -1,10 +1,11 @@
 "use client"
 
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 interface ScreenshotProps {
     _id: string;
@@ -38,6 +39,10 @@ export default function All_Images() {
 
     const [screenshots, setScreenshots] = useState<ScreenshotProps[]>([]);
     const [loading, setLoading] = useState(false);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+
+    const selectedCard = screenshots.find((item) => item._id === selectedId);
+
 
     const getUserIdFromToken = () => {
         const token = localStorage.getItem("token"); // adjust key if different
@@ -111,10 +116,17 @@ export default function All_Images() {
                                     opacity: 1,
                                     filter: "blur(0px)",
                                 }}
+                                exit={{
+                                    opacity: 0,
+                                    filter: "blur(10px)",
+                                }}
                                 transition={{
                                     duration: 0.3,
                                     delay: screenshot._id ? screenshots.findIndex(s => s._id === screenshot._id) * 0.1 : 0,
                                 }}
+
+                                layoutId={`card-${screenshot._id}`}
+                                onClick={() => setSelectedId(screenshot._id)}
                                 key={screenshot._id}
                                 className="bg-black/95 rounded-xl overflow-hidden shadow-lg border border-white/10 hover:scale-105 transition-transform duration-300 cursor-pointer"
                             >
@@ -138,6 +150,55 @@ export default function All_Images() {
                     )}
                 </div>
             </div>
+
+            <AnimatePresence mode="wait">
+                {selectedId && selectedCard && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        layoutId={`card-${selectedId}`} // ✅ Match the card's layoutId
+                        className="fixed inset-0 backdrop-blur-lg flex items-center justify-center font-sans"
+                        onClick={() => setSelectedId(null)}
+                    >
+                        <motion.div
+                            className=" text-neutral-100 rounded-lg p-6 w-full max-w-xl bg-black/95 shadow-lg relative"
+                        >
+                            <Image
+                                src={selectedCard.path}
+                                alt={selectedCard.originalName}
+                                width={500}
+                                height={256}
+                                className="rounded object-cover w-full h-64"
+                            />
+                            <h2 className="text-xl font-bold mt-4">{selectedCard.originalName}</h2>
+                            <div className="text-sm text-gray-600 mt-4 flex flex-wrap gap-2">
+                                {selectedCard.tags.map((tag) => (
+                                    <Badge
+                                        key={tag}
+                                        className=" text-black bg-white px-2 py-1 rounded-full text-xs"
+                                    >
+                                        {tag}
+                                    </Badge>
+                                ))}
+                            </div>
+
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-300 mt-4">Image Info</h3>
+                                <p className="text-sm text-gray-200 mt-2">{selectedCard.imageInfo}</p>
+                            </div>
+                            <button
+                                onClick={() => setSelectedId(null)}
+                                className="mt-6 bg-red-400 cursor-pointer text-sm rounded-full text-neutral-200 px-4 py-2"
+                            >
+                                Close
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </section>
     )
 }

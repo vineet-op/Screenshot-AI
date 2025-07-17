@@ -38,9 +38,6 @@ export default function Signup() {
 
         try {
             const response = await axios.post("http://localhost:8000/api/auth/register", formData)
-            const apiData = response.data
-            localStorage.setItem('token', apiData.token)
-            console.log(apiData);
 
             // Reset form data fields after successful registration
             setFormData({

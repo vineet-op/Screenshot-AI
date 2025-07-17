@@ -35,10 +35,18 @@ export const register = async (req, res) => {
             { expiresIn: '1h' }
         );
 
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // true on HTTPS
+            sameSite: "strict",
+            maxAge: 60 * 60 * 1000, // 1 hour
+        });
+
         res.status(201).json({
             message: "User registered successfully",
             userId: newUser._id,
-            token
+            name: newUser.name,
+            email: newUser.email,
         });
     } catch (error) {
         console.error("Registration error:", error);
@@ -69,13 +77,21 @@ export const login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
+        // ✅ Set cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 60 * 60 * 1000,
+        });
+
         res.status(200).json({
             message: "Login successful",
             userId: user._id,
             name: user.name,
             email: user.email,
-            token
         });
+
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ error: "Login failed" });
