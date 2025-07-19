@@ -1,10 +1,27 @@
+"use client"
+
 import Features from "./components/Features/Features";
 import FinalCta from "./components/Final-Cta/FinalCta";
 import Footer from "./components/Footer/Footer";
 import Homepage from "./components/Homepage/Homepage";
 import Works from "./components/Works/Works";
+import Lenis from "lenis";
+import { useEffect } from "react";
 
 export default function Home() {
+  // Initialize Lenis
+  useEffect(() => {
+    const lenis = new Lenis();
+
+    // Use requestAnimationFrame to continuously update the scroll
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+  }, []);
+
   return (
     <main className=" w-screen h-full bg-black/95 flex flex-col justify-center items-center relative overflow-hidden">
       <div className="absolute inset-0">
