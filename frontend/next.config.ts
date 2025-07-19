@@ -5,7 +5,14 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['res.cloudinary.com'],
+    domains: ['res.cloudinary.com',
+      'lh3.googleusercontent.com',
+      'miro.medium.com',
+      'avatar.vercel.sh',
+      'ui-avatars.com',
+      'www.popsci.com',
+      'images.ctfassets.net'
+    ],
   },
 };
 

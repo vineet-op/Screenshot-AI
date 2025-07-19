@@ -17,14 +17,15 @@ export default function Navbar() {
             </div>
 
             {/* Navigation Tabs */}
-            <div className="hidden md:flex space-x-6 text-white text-sm font-medium">
+            <div className="hidden md:flex space-x-6 text-white text-sm font-sans">
                 <a href="#" className="hover:text-blue-300 transition">Home</a>
+                <a href="#" className="hover:text-blue-300 transition">Works</a>
                 <a href="#" className="hover:text-blue-300 transition">Features</a>
-                <a href="#" className="hover:text-blue-300 transition">About</a>
+                <a href="#" className="hover:text-blue-300 transition">Explore</a>
             </div>
 
             {/* Auth Buttons */}
-            <div className=" flex gap-4 justify-center items-center text-center font-medium">
+            <div className=" flex gap-4 justify-center items-center text-center font-sans">
                 <Link href="/login" className="text-white hover:text-blue-300 cursor-pointer transition text-sm">
                     Login
                 </Link>

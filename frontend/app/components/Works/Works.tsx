@@ -5,8 +5,8 @@ import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 
 export default function Works() {
     return (
-        <section className="px-10 w-screen h-screen overflow-hidden text-white relative">
-            <div className=" max-w-5xl mx-auto flex flex-col justify-center items-center text-center px-10">
+        <section className="px-10 w-screen h-full overflow-hidden text-white relative">
+            <div className=" max-w-5xl mx-auto flex flex-col justify-center items-center text-center">
                 <motion.h2
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}

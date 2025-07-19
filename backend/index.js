@@ -3,8 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
-import authRoutes from "../routes/authRoutes.js";
-import imageRoutes from "../routes/imageRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import imageRoutes from "./routes/imageRoutes.js";
 
 
 dotenv.config();
@@ -50,8 +50,9 @@ const connectDB = async () => {
 
 
 // Health check route
-app.get("/health", (req, res) => {
-    res.status(200).send("Server is running");
+app.get("/", (req, res) => {
+    res.status(200).
+        json({ message: "Server is running" });
 });
 
 app.use("/api/auth", authRoutes);
@@ -67,5 +68,12 @@ app.use(async (req, res, next) => {
     await connectDB();
     next();
 });
+
+
+
+app.listen(PORT, () => {
+    console.log(`💓 Server running on port ${PORT}`);
+});
+
 
 export default app;

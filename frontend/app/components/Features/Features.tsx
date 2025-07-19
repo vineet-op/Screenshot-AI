@@ -16,7 +16,7 @@ export default function Features() {
     return (
         <motion.section
             id="features"
-            className="mt-5 relative w-screen h-full"
+            className="mt-25 relative w-screen h-full"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
