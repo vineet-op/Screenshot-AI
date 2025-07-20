@@ -12,6 +12,8 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import { easeInOut, motion } from "motion/react"
 import { toast } from "sonner"
+import { loginSchema } from "@/lib/zodSchemas";
+import type { LoginSchema } from "@/lib/zodSchemas";
 
 interface LoginFormData {
     email: string
@@ -35,9 +37,18 @@ export default function Login() {
         e.preventDefault()
         setIsLoading(true)
 
+        const parsed = loginSchema.safeParse(formData);
+
+        if (!parsed.success) {
+            setIsLoading(false);
+            const errorMessage = parsed.error.issues[0]?.message || "Invalid input";
+            toast(errorMessage);
+            return;
+        }
+
         try {
 
-            const response = await axios.post("http://localhost:8000/api/auth/login", formData, {
+            const response = await axios.post("http://localhost:8000/api/auth/login", parsed.data, {
                 withCredentials: true
             })
 

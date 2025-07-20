@@ -2,6 +2,11 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from "../Model/userSchema.js";
 
+
+const TOKEN_EXPIRY = '7h';
+const COOKIE_MAX_AGE = 7 * 60 * 60 * 1000;
+
+
 // Authentication Routes
 export const register = async (req, res) => {
 
@@ -32,14 +37,14 @@ export const register = async (req, res) => {
         const token = jwt.sign(
             { userId: newUser._id, email: newUser.email },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: TOKEN_EXPIRY }
         );
 
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // true on HTTPS
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000 * 7, // 7 hours
+            maxAge: COOKIE_MAX_AGE
         });
 
         res.status(201).json({
@@ -74,7 +79,7 @@ export const login = async (req, res) => {
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '7h' }
+            { expiresIn: TOKEN_EXPIRY }
         );
 
         // ✅ Set cookie
@@ -82,7 +87,7 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000,
+            maxAge: COOKIE_MAX_AGE
         });
 
         res.status(200).json({
@@ -97,3 +102,12 @@ export const login = async (req, res) => {
         res.status(500).json({ error: "Login failed" });
     }
 }
+
+export const logout = (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
+    });
+    res.status(200).json({ message: 'Logged out successfully' });
+};

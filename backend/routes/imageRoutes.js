@@ -8,8 +8,9 @@ const router = express.Router()
 router.post("/upload_images", authMiddleware, uploadImages)
 
 // Public routes
-router.get("/images/search", searchImages)
+router.get("/images/search", authMiddleware, searchImages)
 router.get("/images/:id", getImageById)
 router.get("/getall_images", getAllImages)
+
 
 export default router;

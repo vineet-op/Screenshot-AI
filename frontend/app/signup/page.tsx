@@ -11,19 +11,16 @@ import Link from "next/link"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { easeInOut, motion } from "motion/react"
+import { signupSchema } from "@/lib/zodSchemas";
 import { toast } from "sonner"
+import type { SignupSchema } from "@/lib/zodSchemas";
 
-interface SignupFormData {
-    email: string
-    name: string
-    password: string
-}
 
 export default function Signup() {
 
     const [showPassword, setShowPassword] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [formData, setFormData] = useState<SignupFormData>({
+    const [formData, setFormData] = useState<SignupSchema>({
         email: "",
         name: "",
         password: "",
@@ -32,15 +29,22 @@ export default function Signup() {
     const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
+
         e.preventDefault()
         setIsLoading(true)
 
+        const parsed = signupSchema.safeParse(formData);
+
+        if (!parsed.success) {
+            setIsLoading(false);
+            const errorMessage = parsed.error.issues[0]?.message || "Invalid input";
+            toast(errorMessage);
+            return;
+        }
 
         try {
-            const response = await axios.post("http://localhost:8000/api/auth/register", formData)
 
-            // Reset form data fields after successful registration
-            setIsLoading(false)
+            await axios.post("http://localhost:8000/api/auth/register", parsed.data)
 
             setFormData({
                 email: "",
@@ -62,6 +66,9 @@ export default function Signup() {
                 setIsLoading(false);
                 toast("An unexpected error occurred");
             }
+        }
+        finally {
+            setIsLoading(false)
         }
     }
 

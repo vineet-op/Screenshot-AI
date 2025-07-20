@@ -19,7 +19,7 @@ cloudinary.config({
 
 const upload = multer({
     storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const filetypes = /jpeg|jpg|png/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -31,7 +31,8 @@ const upload = multer({
             cb(new Error('Only JPEG, JPG, and PNG formats allowed!'));
         }
     }
-}).array('uploadedImages', 10); // Allow up to 10 images
+}).array('uploadedImages', 10);
+
 
 //Download the image from the URL
 async function downloadImageBuffer(url) {
