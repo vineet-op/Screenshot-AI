@@ -39,7 +39,7 @@ export const register = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // true on HTTPS
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000, // 1 hour
+            maxAge: 60 * 60 * 1000 * 7, // 7 hours
         });
 
         res.status(201).json({
@@ -74,7 +74,7 @@ export const login = async (req, res) => {
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '7h' }
         );
 
         // ✅ Set cookie

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { toast } from "sonner"
+import { useRouter } from "next/navigation";
+
 
 export default function Dashboard() {
 
@@ -13,13 +14,6 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            router.replace("/login");
-        }
-    }, [router]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -32,7 +26,10 @@ export default function Dashboard() {
     };
 
     const UploadImages = async () => {
-        if (images.length === 0) return alert("No images selected.");
+        if (images.length === 0) {
+            toast("No images selected.");
+            return;
+        }
 
         const formData = new FormData();
         images.forEach((image) => {
@@ -58,7 +55,10 @@ export default function Dashboard() {
                 console.log(uploaded);
                 setImages(uploaded); // Adjust as needed
             }
+
             toast("Upload successful!")
+            router.push("/all-Images"); // Redirect to all images page after upload
+
         } catch (err) {
             toast("Upload failed!")
             console.error("Upload failed:", err);

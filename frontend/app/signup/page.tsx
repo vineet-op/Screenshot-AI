@@ -34,22 +34,24 @@ export default function Signup() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsLoading(true)
-        // Simulate API call
+
 
         try {
             const response = await axios.post("http://localhost:8000/api/auth/register", formData)
 
             // Reset form data fields after successful registration
+            setIsLoading(false)
+
             setFormData({
                 email: "",
                 name: "",
                 password: "",
             });
 
-            setIsLoading(false)
             router.push("/login")
 
-        } catch (error) {
+        }
+        catch (error) {
             if (error instanceof axios.AxiosError) {
                 const errorMessage = error.response?.data?.error || "Registration failed";
                 console.error("Registration error:", errorMessage);
@@ -61,7 +63,6 @@ export default function Signup() {
                 toast("An unexpected error occurred");
             }
         }
-
     }
 
     const handleInputChange = (field: string, value: string | boolean) => {

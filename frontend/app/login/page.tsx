@@ -11,6 +11,7 @@ import Link from "next/link"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { easeInOut, motion } from "motion/react"
+import { toast } from "sonner"
 
 interface LoginFormData {
     email: string
@@ -18,8 +19,10 @@ interface LoginFormData {
 }
 
 export default function Login() {
+
     const [showPassword, setShowPassword] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
     const [formData, setFormData] = useState<LoginFormData>({
         email: "",
         password: "",
@@ -28,10 +31,12 @@ export default function Login() {
     const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
+
         e.preventDefault()
         setIsLoading(true)
-        // Authenticate user and get JWT token
+
         try {
+
             const response = await axios.post("http://localhost:8000/api/auth/login", formData, {
                 withCredentials: true
             })
@@ -41,13 +46,13 @@ export default function Login() {
                 password: ""
             })
 
-            router.push("/dashboard")
+            toast("Login successful!");
+            router.push("/all-Images");
 
         } catch (error) {
             if (error instanceof axios.AxiosError) {
                 const errorMessage = error.response?.data?.error || "Login failed";
                 console.error("Login error:", errorMessage);
-                // You could add toast or error state handling here
             } else {
                 console.error("Unexpected error:", error);
             }
@@ -118,8 +123,6 @@ export default function Login() {
                     </CardHeader>
 
                     <CardContent className="space-y-6">
-
-
                         {/* Form */}
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
