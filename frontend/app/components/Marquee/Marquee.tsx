@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { useRef } from "react"
 
 interface MarqueeProps {
     images?: string[]
@@ -20,42 +21,42 @@ export default function Marquee({
         "/placeholder.svg?height=200&width=300",
         "/placeholder.svg?height=200&width=300",
     ],
-    speed = 10,
-    direction = "right",
+    speed = 80, // lower = faster
+    direction = "left",
     pauseOnHover = true,
     className = "",
 }: MarqueeProps) {
-    // Duplicate images for seamless loop
     const duplicatedImages = [...images, ...images]
+    const marqueeRef = useRef<HTMLDivElement>(null)
 
     return (
-        <div className={`overflow-hidden whitespace-nowrap ${className}`}>
+        <div className={`overflow-hidden ${className}`}>
             <motion.div
-                className="flex gap-6"
+                ref={marqueeRef}
+                className="flex gap-6 w-max"
                 animate={{
-                    x: direction === "right" ? [0, -100 * images.length] : [-100 * images.length, 0],
+                    x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"],
                 }}
                 transition={{
-                    x: {
-                        repeat: Number.POSITIVE_INFINITY,
-                        repeatType: "loop",
-                        duration: speed,
-                        ease: "linear",
-                    },
+                    duration: speed,
+                    ease: "linear",
+                    repeat: Infinity,
                 }}
-                whileHover={pauseOnHover ? { animationPlayState: "paused" } : {}}
                 style={{
-                    width: `${duplicatedImages.length * 100}%`,
+                    display: "flex",
                 }}
             >
                 {duplicatedImages.map((image, index) => (
-                    <div key={index} className="flex-shrink-0 w-80 h-48 rounded-lg overflow-hidden shadow-lg">
+                    <div
+                        key={index}
+                        className="flex-shrink-0 w-80 h-48 rounded-lg overflow-hidden shadow-lg"
+                    >
                         <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Marquee image ${(index % images.length) + 1}`}
+                            src={image}
+                            alt={`Marquee image ${index + 1}`}
                             width={320}
                             height={192}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            className="w-full h-full object-cover"
                         />
                     </div>
                 ))}

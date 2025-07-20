@@ -18,10 +18,10 @@ export default function Navbar() {
 
             {/* Navigation Tabs */}
             <div className="hidden md:flex space-x-6 text-white text-sm font-sans">
-                <a href="#" className="hover:text-blue-300 transition">Home</a>
-                <a href="#" className="hover:text-blue-300 transition">Works</a>
-                <a href="#" className="hover:text-blue-300 transition">Features</a>
-                <a href="#" className="hover:text-blue-300 transition">Explore</a>
+                <a href="#home" className="hover:text-blue-300 transition">Home</a>
+                <a href="#work" className="hover:text-blue-300 transition">Works</a>
+                <a href="#feature" className="hover:text-blue-300 transition">Features</a>
+                <a href="#explore" className="hover:text-blue-300 transition">Explore</a>
             </div>
 
             {/* Auth Buttons */}
