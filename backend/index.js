@@ -17,8 +17,16 @@ const PORT = process.env.PORT;
 app.use(cookieParser());
 app.use(express.json());
 
+// CORS Configuration - This is the fix for your issue
 app.use(cors({
-    credentials: true
+    origin: [
+        "https://screenshot-ai-iota.vercel.app",
+        "http://localhost:3000",
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    optionsSuccessStatus: 200
 }));
 
 
@@ -38,9 +46,9 @@ app.get("/", (req, res) => {
         json({ message: "Server is running" });
 });
 
+app.use('/api/auth/me', getCurrentUser);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", imageRoutes);
-app.get('/api/auth/me', getCurrentUser);
 
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found" });
