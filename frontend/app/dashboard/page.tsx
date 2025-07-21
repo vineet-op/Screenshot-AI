@@ -39,7 +39,7 @@ export default function Dashboard() {
         try {
             setLoading(true);
             const response = await axios.post(
-                "http://localhost:8000/api/user/upload_images",
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/upload_images`,
                 formData,
                 {
                     withCredentials: true,

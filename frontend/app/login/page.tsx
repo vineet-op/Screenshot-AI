@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation"
 import { easeInOut, motion } from "motion/react"
 import { toast } from "sonner"
 import { loginSchema } from "@/lib/zodSchemas";
-import type { LoginSchema } from "@/lib/zodSchemas";
 
 interface LoginFormData {
     email: string
@@ -48,7 +47,7 @@ export default function Login() {
 
         try {
 
-            const response = await axios.post("http://localhost:8000/api/auth/login", parsed.data, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, parsed.data, {
                 withCredentials: true
             })
 
@@ -64,6 +63,7 @@ export default function Login() {
             if (error instanceof axios.AxiosError) {
                 const errorMessage = error.response?.data?.error || "Login failed";
                 console.error("Login error:", errorMessage);
+                toast("Login Failed")
             } else {
                 console.error("Unexpected error:", error);
             }

@@ -8,12 +8,12 @@ import Works from "./components/Works/Works";
 import Lenis from "lenis";
 import { useEffect } from "react";
 
+
 export default function Home() {
   // Initialize Lenis
   useEffect(() => {
     const lenis = new Lenis();
 
-    // Use requestAnimationFrame to continuously update the scroll
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -21,6 +21,7 @@ export default function Home() {
 
     requestAnimationFrame(raf);
   }, []);
+
 
   return (
     <main className=" w-screen h-full bg-black/95 flex flex-col justify-center items-center relative overflow-hidden">

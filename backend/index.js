@@ -15,13 +15,15 @@ const PORT = process.env.PORT;
 
 // Middleware
 app.use(cookieParser());
+app.use(express.json());
 
 app.use(cors({
-    origin: ['http://localhost:3000'],
+    origin: [
+        'http://localhost:3000',
+        'https://screenshot-ai-iota.vercel.app'
+    ],
     credentials: true
 }));
-
-app.use(express.json());
 
 
 
@@ -42,7 +44,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", imageRoutes);
-app.use('/api/auth/me', getCurrentUser);
+app.get('/api/auth/me', getCurrentUser);
 
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found" });

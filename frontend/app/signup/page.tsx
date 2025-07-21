@@ -44,7 +44,9 @@ export default function Signup() {
 
         try {
 
-            await axios.post("http://localhost:8000/api/auth/register", parsed.data)
+            await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/register`, parsed.data, {
+                withCredentials: true
+            })
 
             setFormData({
                 email: "",
@@ -55,6 +57,7 @@ export default function Signup() {
             router.push("/login")
 
         }
+
         catch (error) {
             if (error instanceof axios.AxiosError) {
                 const errorMessage = error.response?.data?.error || "Registration failed";

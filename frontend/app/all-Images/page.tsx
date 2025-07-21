@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Calendar, CheckCircle, Clock, Copy, Download, ExternalLink, Eye, FileImage, Tag } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface ScreenshotProps {
     _id: string;
@@ -112,11 +113,15 @@ export default function All_Images() {
 
     const getUserIdFromServer = async () => {
         try {
-            const res = await fetch("http://localhost:8000/api/auth/me", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/me`, {
                 credentials: "include",
             });
+            console.log(res)
 
-            if (!res.ok) throw new Error("Not authenticated");
+            if (!res.ok) {
+                toast("Not authenticated Please Login");
+                throw new Error("Not authenticated");
+            }
 
             const data = await res.json();
             console.log("User data from server:", data.userId);
@@ -138,8 +143,9 @@ export default function All_Images() {
         }
 
         try {
+
             setLoading(true);
-            const response = await axios.get("http://localhost:8000/api/user/getall_images", {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/getall_images`, {
                 params: {
                     userId
                 },
