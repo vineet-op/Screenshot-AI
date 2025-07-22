@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 
 export default function FinalCta() {
@@ -51,14 +52,16 @@ export default function FinalCta() {
                         viewport={{ once: true }}
                         className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10 md:mt-18"
                     >
-                        <Button
-                            size="lg"
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-full shadow-lg transition-all duration-300 font-sans text-sm md:text-base lg:text-sm lg:mt-4 tracking-tight flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 "
-                        >
-                            <Zap className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                            Explore now
-                            <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
-                        </Button>
+                        <Link href={"/signup"}>
+                            <Button
+                                size="lg"
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-full shadow-lg transition-all duration-300 font-sans text-sm md:text-base lg:text-sm lg:mt-4 tracking-tight flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 "
+                            >
+                                <Zap className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                                Explore now
+                                <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
                     </motion.div>
                 </div>
             </div>
