@@ -6,7 +6,7 @@ import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 export default function Works() {
     return (
         <section id="work" className="px-10 w-screen h-full overflow-hidden text-white relative">
-            <div className=" max-w-5xl mx-auto flex flex-col justify-center items-center text-center">
+            <div className="max-w-6xl mx-auto flex flex-col justify-center items-center text-center">
                 <motion.h2
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -36,27 +36,13 @@ export default function Works() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                 >
+
                     <HeroVideoDialog
-                        className="block dark:hidden"
+                        className="block dark:hidden lg:w-6xl xl:w-6xl w-md"
                         animationStyle="top-in-bottom-out"
-                        videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
-                        thumbnailSrc="https://startup-template-sage.vercel.app/hero-light.png"
-                        thumbnailAlt="Hero Video"
-                    />
-                </motion.div>
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                >
-                    <HeroVideoDialog
-                        className="hidden dark:block"
-                        animationStyle="top-in-bottom-out"
-                        videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
-                        thumbnailSrc="https://startup-template-sage.vercel.app/hero-dark.png"
-                        thumbnailAlt="Hero Video"
+                        videoSrc="https://www.youtube.com/embed/YvxdTdqsT64?si=uTmYY0puE4Udy8Nr"
+                        thumbnailSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq5ilcYrZ4odJH3QwjoVCYBWqsVyKcQTteFw&s"
+                        thumbnailAlt="Project Working"
                     />
                 </motion.div>
             </div>
