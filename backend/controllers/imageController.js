@@ -9,13 +9,29 @@ import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 
-const storage = multer.memoryStorage();
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
+const apiKey = process.env.CLOUDINARY_API_KEY?.trim();
+const apiSecret = process.env.CLOUDINARY_API_SECRET?.trim();
 
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true,
 });
+
+if (!cloudName || !apiKey || !apiSecret) {
+    console.error("❌ Missing Cloudinary credentials in .env (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET)");
+} else {
+    cloudinary.api.ping()
+        .then(() => console.log("✅ Cloudinary configured"))
+        .catch(() => {
+            console.error("❌ Cloudinary credentials invalid (api_secret mismatch).");
+            console.error("   Copy fresh values from Cloudinary → Settings → API Keys → View API Keys.");
+        });
+}
+
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage,
@@ -138,26 +154,32 @@ export const uploadImages = async (req, res) => {
 
         } catch (error) {
             console.error('Upload error:', error);
-            return res.status(500).json({ error: "Internal server error" });
+            const message = error?.http_code === 401
+                ? "Cloudinary upload failed: invalid API credentials. Update CLOUDINARY_* values in backend/.env"
+                : error?.message || "Internal server error";
+            return res.status(error?.http_code === 401 ? 502 : 500).json({ error: message });
         }
     });
 };
 
 export const searchImages = async (req, res) => {
     try {
-        const userId = req.query.userId;
+        const userId = req.user.userId;
         const query = req.query.q;
 
-        if (!userId || !query) {
-            return res.status(400).json({ error: "userId and query are required" });
+        if (!query) {
+            return res.status(400).json({ error: "query (q) is required" });
         }
+
+        // Escape regex metacharacters to prevent ReDoS
+        const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
         const images = await Image.find({
             userId,
             $or: [
-                { tags: { $regex: query, $options: 'i' } },
-                { extractedText: { $regex: query, $options: 'i' } },
-                { source: { $regex: query, $options: 'i' } }
+                { tags: { $regex: safeQuery, $options: 'i' } },
+                { extractedText: { $regex: safeQuery, $options: 'i' } },
+                { source: { $regex: safeQuery, $options: 'i' } }
             ]
         });
 
@@ -170,7 +192,7 @@ export const searchImages = async (req, res) => {
 
 export const getImageById = async (req, res) => {
     try {
-        const image = await Image.findById(req.params.id);
+        const image = await Image.findOne({ _id: req.params.id, userId: req.user.userId });
         if (!image) {
             return res.status(404).json({ error: "Image not found" });
         }
@@ -183,11 +205,7 @@ export const getImageById = async (req, res) => {
 
 export const getAllImages = async (req, res) => {
     try {
-        const userId = req.query.userId;
-
-        if (!userId) {
-            return res.status(400).json({ error: "userId is required" });
-        }
+        const userId = req.user.userId;
         const images = await Image.find({ userId });
         res.json(images);
     } catch (error) {

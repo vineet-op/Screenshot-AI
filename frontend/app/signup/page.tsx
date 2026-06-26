@@ -42,9 +42,15 @@ export default function Signup() {
             return;
         }
 
-        try {
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+        if (!backendUrl) {
+            toast("Backend URL is not configured. Set NEXT_PUBLIC_BACKEND_URL in .env");
+            setIsLoading(false);
+            return;
+        }
 
-            await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/register`, parsed.data, {
+        try {
+            await axios.post(`${backendUrl}/api/auth/register`, parsed.data, {
                 withCredentials: true
             })
 
@@ -54,23 +60,22 @@ export default function Signup() {
                 password: "",
             });
 
+            toast("Account created successfully!");
             router.push("/login")
-
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error instanceof axios.AxiosError) {
-                const errorMessage = error.response?.data?.error || "Registration failed";
+                const errorMessage =
+                    error.response?.data?.error ||
+                    (error.message === "Network Error"
+                        ? "Cannot reach the server. Is the backend running?"
+                        : "Registration failed");
                 console.error("Registration error:", errorMessage);
-                setIsLoading(false);
-                toast("Registration failed");
+                toast.error(errorMessage);
             } else {
                 console.error("Unexpected error:", error);
-                setIsLoading(false);
-                toast("An unexpected error occurred");
+                toast.error("An unexpected error occurred");
             }
-        }
-        finally {
+        } finally {
             setIsLoading(false)
         }
     }

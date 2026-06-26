@@ -4,13 +4,10 @@ import { authMiddleware } from "../middlewares/authMiddleware.js"
 
 const router = express.Router()
 
-// Protected routes (require authentication)
 router.post("/upload_images", authMiddleware, uploadImages)
-
-// Public routes
 router.get("/images/search", authMiddleware, searchImages)
-router.get("/images/:id", getImageById)
-router.get("/getall_images", getAllImages)
+router.get("/images/:id", authMiddleware, getImageById)
+router.get("/getall_images", authMiddleware, getAllImages)
 
 
 export default router;

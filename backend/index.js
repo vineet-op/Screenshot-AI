@@ -29,30 +29,42 @@ app.use(cors({
     optionsSuccessStatus: 200
 }));
 
-// Additional CORS options configuration
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
 
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
+const mongoUri = process.env.MONGODB_URI?.trim();
 
-    next();
-});
+function buildMongoUri(uri) {
+    if (!uri) return null;
+    if (uri.includes("?")) return uri;
+    const base = uri.replace(/\/$/, "");
+    return `${base}/screenshot-ai?retryWrites=true&w=majority`;
+}
 
+const resolvedMongoUri = buildMongoUri(mongoUri);
 
-mongoose
-    .connect(process.env.MONGODB_URI)
-    .then(() => {
-        console.log("✅ Connected to MongoDB");
-    })
-    .catch((err) => {
-        console.log("❌ Error connecting to MongoDB", err);
-    });
+mongoose.set("bufferCommands", false);
+
+if (!resolvedMongoUri || resolvedMongoUri.includes("<db_password>")) {
+    console.error("❌ MONGODB_URI is missing or still contains the <db_password> placeholder.");
+    console.error("   Update backend/.env with your Atlas connection string and restart the server.");
+} else {
+    mongoose
+        .connect(resolvedMongoUri, {
+            serverSelectionTimeoutMS: 10000,
+            autoSelectFamily: false,
+        })
+        .then(() => {
+            console.log("✅ Connected to MongoDB");
+        })
+        .catch((err) => {
+            console.error("❌ Error connecting to MongoDB:", err.message);
+            console.error("   Fix in MongoDB Atlas:");
+            console.error("   1. Network Access → Add IP Address → Allow Access from Anywhere (0.0.0.0/0) for dev");
+            console.error("   2. Database Access → confirm user/password match your connection string");
+            console.error("   3. Clusters → ensure the cluster is not paused");
+        });
+}
+
+export const isDbConnected = () => mongoose.connection.readyState === 1;
 
 // Health check route
 app.get("/", (req, res) => {

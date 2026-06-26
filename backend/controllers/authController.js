@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import { User } from "../Model/userSchema.js";
 
 
@@ -11,6 +12,12 @@ const COOKIE_MAX_AGE = 7 * 60 * 60 * 1000;
 export const register = async (req, res) => {
 
     try {
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({
+                error: "Database unavailable. Check MongoDB Atlas Network Access (whitelist your IP).",
+            });
+        }
+
         const { email, name, password } = req.body;
 
         // Check if user already exists
@@ -40,10 +47,12 @@ export const register = async (req, res) => {
             { expiresIn: TOKEN_EXPIRY }
         );
 
+        const isProduction = process.env.NODE_ENV === "production";
+
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: COOKIE_MAX_AGE
         });
 
@@ -61,18 +70,19 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-
-        // Find user by email
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({
+                error: "Database unavailable. Check MongoDB Atlas Network Access (whitelist your IP).",
+            });
         }
 
-        // Check password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ error: "Invalid credentials" });
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+        const isMatch = user ? await bcrypt.compare(password, user.password) : false;
+
+        if (!user || !isMatch) {
+            return res.status(401).json({ error: "Invalid credentials" });
         }
 
         // Generate JWT token
@@ -82,11 +92,12 @@ export const login = async (req, res) => {
             { expiresIn: TOKEN_EXPIRY }
         );
 
-        // ✅ Set cookie
+        const isProduction = process.env.NODE_ENV === "production";
+
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: COOKIE_MAX_AGE
         });
 
@@ -104,10 +115,11 @@ export const login = async (req, res) => {
 }
 
 export const logout = (req, res) => {
+    const isProduction = process.env.NODE_ENV === "production";
     res.clearCookie('token', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict"
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
     });
     res.status(200).json({ message: 'Logged out successfully' });
 };
