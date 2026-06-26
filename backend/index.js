@@ -20,7 +20,7 @@ app.use(express.json());
 // CORS Configuration - This is the fix for your issue
 app.use(cors({
     origin: [
-        "https://screenshot-ai-iota.vercel.app",
+        "https://screenshots.vineetop.com/",
         "http://localhost:3000",
     ],
     credentials: true,

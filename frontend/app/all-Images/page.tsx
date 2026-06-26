@@ -175,7 +175,7 @@ export default function All_Images() {
   }, []);
 
   return (
-    <section className="w-screen lg:px-60 px-10 min-h-screen bg-black/95 relative overflow-hidden text-white">
+    <section className="w-screen px-40 min-h-screen bg-black/95 relative overflow-hidden text-white">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl "></div>
@@ -366,9 +366,6 @@ export default function All_Images() {
                         onLoad={() => setImageLoaded(true)}
                         onError={() => setImageLoaded(true)}
                       />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <Eye className="w-8 h-8 text-white drop-shadow-lg" />
-                      </div>
                     </div>
                   </div>
 
