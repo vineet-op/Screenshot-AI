@@ -57,7 +57,7 @@ export default function Login() {
             })
 
             toast("Login successful!");
-            router.push("/all-Images");
+            window.location.href = "/all-Images";
 
         } catch (error) {
             if (error instanceof axios.AxiosError) {
