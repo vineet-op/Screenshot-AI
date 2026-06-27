@@ -5,15 +5,26 @@ import axios from "axios";
 import Image from "next/image";
 import { toast } from "sonner"
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/useAuth";
 
 
 export default function Dashboard() {
+
+    const { checking } = useAuth();
 
     const [previews, setPreviews] = useState<string[]>([]);
     const [images, setImages] = useState<File[]>([]);
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
+
+    if (checking) {
+        return (
+            <section className="w-screen h-screen bg-black/95 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+            </section>
+        );
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
